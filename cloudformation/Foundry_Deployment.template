@@ -7,7 +7,7 @@
 					"Label": {
 						"default": "Base Configuration"
 					},
-					"Parameters": ["AdminUserName", "AdminUserPW", "FoundryDownloadLink", "InstanceKey", "InstanceType", "OptionalFixedIP", "S3BucketName", "UseExistingBucket", "TakeSnapshots", "SnapshotFrequency"]
+					"Parameters": ["FoundryDownloadLink", "InstanceKey", "InstanceType", "OptionalFixedIP", "S3BucketName", "UseExistingBucket", "TakeSnapshots", "SnapshotFrequency"]
 				},
 				{
 					"Label": {
@@ -81,17 +81,6 @@
 			"Type": "AWS::EC2::KeyPair::KeyName",
 			"Description": "An SSH keypair used to access your instance. This MUST be created manually.",
 			"ConstraintDescription": "This MUST be created manually https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair"
-		},
-		"AdminUserPW": {
-			"Type": "String",
-			"NoEcho": "true",
-			"Description": "Password for admin user. Have a minimum of 8 characters and a maximum of 128 characters include a minimum of three of the following mix of character types: uppercase, lowercase, numbers, and symbols.",
-			"ConstraintDescription": "Have a minimum of 8 characters and a maximum of 128 characters include a minimum of three of the following mix of character types: uppercase, lowercase, numbers, and symbols."
-		},
-		"AdminUserName": {
-			"Type": "String",
-			"Default": "AdminUser",
-			"Description": "Username to be used for the Admin user."
 		},
 		"InstanceType": {
 			"Description": "WebServer EC2 instance type",
