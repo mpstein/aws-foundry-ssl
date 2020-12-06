@@ -162,37 +162,11 @@
 			"Description": "This only matters if WebServerBool is set to true, and DomainRegistrar is set to google. If both of these conditions are not true ignore this parameter. Secret for fully qualified domain name dynamic DNS.",
 			"Default": "null",
 			"Type": "String"
-		}
-	},
-	"Mappings": {
-		"AMIRegionMap": {
-			"us-east-1": {
-				"AMILinux": "ami-0c94855ba95c71c99"
-			},
-			"us-east-2":{
-				"AMILinux": "ami-03657b56516ab7912"
-			},
-			"us-west-1": {
-				"AMILinux": "ami-0e4035ae3f70c400f"
-			},
-			"us-west-2": {
-				"AMILinux": "ami-01ce4793a2f45922e"
-			},
-			"ap-southeast-2": {
-				"AMILinux": "ami-0099823645f06b6a1"
-			},
-			"eu-north-1": {
-				"AMILinux": "ami-02511cb3673b49e04"
-			},
-			"eu-west-1": {
-				"AMILinux": "ami-08a2aed6e0a6f9c7d"
-			},
-			"eu-central-1": {
-				"AMILinux": "ami-08c148bb835696b45"
-			},
-			"sa-east-1": {
-				"AMILinux": "ami-02898a1921d38a50b"
-			}
+		},
+		"LatestAmiId": {
+			"Description": "Latest Amazon Linux 2 Parameter",
+			"Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+			"Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
 		}
 	},
 	"Conditions": {
@@ -496,13 +470,7 @@
 					"Ref": "InstanceKey"
 				},
 				"ImageId": {
-					"Fn::FindInMap": [
-						"AMIRegionMap",
-						{
-							"Ref": "AWS::Region"
-						},
-						"AMILinux"
-					]
+					"Ref": "LatestAmiId"
 				},
 				"InstanceType": {
 					"Ref": "InstanceType"
@@ -528,8 +496,8 @@
 								"AWS_INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)\n",
 								"ROOT_VOLUME_IDS=$(aws ec2 describe-instances --region $AWS_REGION --instance-id $AWS_INSTANCE_ID --output text --query Reservations[0].Instances[0].BlockDeviceMappings[0].Ebs.VolumeId)\n",
 								"aws ec2 create-tags --resources $ROOT_VOLUME_IDS --region $AWS_REGION --tags Key=Snapshot,Value=true\n",
-								"curl --silent --location https://rpm.nodesource.com/setup_12.x | sudo bash -\n",
-								"sudo yum install -y git\n",
+								"curl --silent --location https://rpm.nodesource.com/setup_12.x | bash -\n",
+								"yum install -y git\n",
 								"cd /\n",
 								"git clone https://github.com/cat-box/aws-foundry-ssl.git\n",
 								"mkdir /foundry /foundrydata /aws-foundry-ssl/variables /foundryssl\n",
@@ -550,10 +518,10 @@
 								"echo 'webserver_bool=", { "Ref": "WebServerBool" }, "' >> /foundryssl/variables.sh\n",
 								"echo 'webserver_user=", { "Ref": "GoogleAPIKey" }, "' >> /foundryssl/variables.sh\n",
 								"echo 'webserver_pass=", { "Ref": "GoogleAPISecret" }, "' >> /foundryssl/variables.sh\n",	
-								"sudo chown root:root /foundryssl/variables.sh\n",
-								"sudo chmod 700 /foundryssl/variables.sh\n",
+								"chown root:root /foundryssl/variables.sh\n",
+								"chmod 700 /foundryssl/variables.sh\n",
 
-								"sudo chmod -R a+x /aws-foundry-ssl\n",
+								"chmod -R a+x /aws-foundry-ssl\n",
 								
 								"/aws-foundry-ssl/scripts/global/install.sh\n"
 							]
