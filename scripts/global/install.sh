@@ -20,6 +20,18 @@ case ${domain_registrar} in
         ;;
 esac
 
+# test for foundry user and create if missing
+getent passwd foundry-user > /dev/null
+if [ $? -ne 0 ]; then
+    useradd -c "foundry user" -s /bin/false -m -U foundry-user
+fi
+
+# add ec2-user to foundry-user group
+getent passwd foundry-user > /dev/null
+if [ $? -eq 0 ]; then
+    usermod -aG foundry-user ec2-user
+fi
+
 # install foundry
 source /aws-foundry-ssl/scripts/global/foundry.sh
 
@@ -31,6 +43,6 @@ source /aws-foundry-ssl/scripts/global/certbot.sh
 
 # clean up install files
 # Do not do this during testing
-sudo rm -r /aws-foundry-ssl
+#sudo rm -r /aws-foundry-ssl
 
 reboot now
